@@ -1,8 +1,6 @@
 name: macOS
-
 on: 
   workflow_dispatch:
-
 defaults:
   run:
     shell: bash
@@ -12,22 +10,11 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
-
-    - name: Setting the Environment Up
+    - name: Setting the Environment Up.
       env:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-      run: |
-        # setup.sh should be present in the repository,
-        # and should be responsible for setting up the environment properly.
-        # It should accept parameters for username, password, and ngrok auth token.
-        chmod +x setup.sh
-        ./setup.sh "alone2017" "alone2017" "$NGROK_AUTH_TOKEN"
-        
-    - name: Retrieve ngrok public URL
-      run: |
-        # This command will retrieve the public URL where ngrok is listening for VNC connections.
-        ngrok_url=$(curl --silent http://127.0.0.1:4040/api/tunnels | jq '.tunnels[0].public_url')
-        echo "ngrok URL is $ngrok_url"
-        
+      run: source setup.sh "alone2017" "alone2017" "$NGROK_AUTH_TOKEN"
+    - name: ngrok is now listening to VNC connections on... name devlop pass alone2017
+      run: curl --silent http://127.0.0.1:4040/api/tunnels | jq '.tunnels[0].public_url'
     - name: Setup tmate Session
       uses: mxschmitt/action-tmate@v2
